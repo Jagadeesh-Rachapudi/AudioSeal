@@ -1,4 +1,4 @@
-# :loud_sound: AudioSeal: Proactive Localized Watermarking
+# :loud_sound: AudioSeal: Proactive Localized Watermarkings
 
 <a href="https://www.python.org/"><img alt="Python" src="https://img.shields.io/badge/-Python 3.8+-blue?style=for-the-badge&logo=python&logoColor=white"></a>
 <a href="https://black.readthedocs.io/en/stable/"><img alt="Code style: black" src="https://img.shields.io/badge/code%20style-black-black.svg?style=for-the-badge&labelColor=gray"></a>
@@ -25,7 +25,6 @@ To learn more, check out our [paper](https://arxiv.org/abs/2401.17264).
 - 2024-04-02: We have updated our license to full MIT license (including the license for the model weights) ! Now you can use AudioSeal in commercial application too!
 - 2024-02-29: AudioSeal 0.1.2 is out, with more bug fixes for resampled audios and updated notebooks
 
-
 # :book: Abstract
 
 **AudioSeal** introduces a breakthrough in **proactive, localized watermarking** for speech. It jointly trains two components: a **generator** that embeds an imperceptible watermark into audio and a **detector** that identifies watermark fragments in long or edited audio files.
@@ -36,10 +35,10 @@ To learn more, check out our [paper](https://arxiv.org/abs/2401.17264).
   - **Robust** against various audio edits like compression, re-encoding, and noise addition.
   - **Fast, single-pass detection** designed to surpass existing models significantly in speed — achieving detection up to **two orders of magnitude faster**, making it ideal for large-scale and real-time applications.
 
-
 # :gear: Installation
 
 ### Requirements:
+
 - Python >= 3.8
 - Pytorch >= 1.13.0
 - [Omegaconf](https://omegaconf.readthedocs.io/)
@@ -47,6 +46,7 @@ To learn more, check out our [paper](https://arxiv.org/abs/2401.17264).
 - [Numpy](https://pypi.org/project/numpy/)
 
 ### Install from PyPI:
+
 ```
 pip install audioseal
 ```
@@ -86,7 +86,7 @@ model = AudioSeal.load_generator("audioseal_wm_16bits")
 
 # a torch tensor of shape (batch, channels, samples) and a sample rate
 # It is important to process the audio to the same sample rate as the model
-# expects. In our case, we support 16khz audio 
+# expects. In our case, we support 16khz audio
 wav, sr = ..., 16000
 
 watermark = model.get_watermark(wav, sr)
@@ -111,11 +111,11 @@ result, message = detector(watermarked_audio, sr)
 
 # result is a tensor of size batch x 2 x frames, indicating the probability (positive and negative) of watermarking for each frame
 # A watermarked audio should have result[:, 1, :] > 0.5
-print(result[:, 1 , :])  
+print(result[:, 1 , :])
 
 # Message is a tensor of size batch x 16, indicating of the probability of each bit to be 1.
 # message will be a random tensor if the detector detects no watermarking from the audio
-print(message)  
+print(message)
 ```
 
 # :rocket: Train your own watermarking model
@@ -124,26 +124,27 @@ Interested in training your own watermarking model? Check out our [training docu
 
 # :wave: Want to contribute?
 
- We welcome pull requests with improvements or suggestions. 
- If you wish to report an issue or propose an enhancement but are unsure how to implement it, feel free to create a GitHub issue.
+We welcome pull requests with improvements or suggestions.
+If you wish to report an issue or propose an enhancement but are unsure how to implement it, feel free to create a GitHub issue.
 
 # :bug: Troubleshooting
 
-- If you encounter the error `ValueError: not enough values to unpack (expected 3, got 2)`, this is because we expect a batch of audio  tensors as inputs. Add one
-dummy batch dimension to your input (e.g. `wav.unsqueeze(0)`, see [example notebook for getting started](examples/Getting_started.ipynb)).
+- If you encounter the error `ValueError: not enough values to unpack (expected 3, got 2)`, this is because we expect a batch of audio tensors as inputs. Add one
+  dummy batch dimension to your input (e.g. `wav.unsqueeze(0)`, see [example notebook for getting started](examples/Getting_started.ipynb)).
 
 - In Windows machines, if you encounter the error `KeyError raised while resolving interpolation: "Environmen variable 'USER' not found"`: This is due to an old checkpoint
-uploaded to the model hub, which is not compatible in Windows. Try to invalidate the cache by removing the files in `C:\Users\<USER>\.cache\audioseal`
-and re-run again.
+  uploaded to the model hub, which is not compatible in Windows. Try to invalidate the cache by removing the files in `C:\Users\<USER>\.cache\audioseal`
+  and re-run again.
 
 - If you use torchaudio to handle your audios and encounter the error `Couldn't find appropriate backend to handle uri ...`, this is due to newer version of
-torchaudio does not handle the default backend well. Either downgrade your torchaudio to `2.1.0` or earlier, or install `soundfile` as your audio backend.
+  torchaudio does not handle the default backend well. Either downgrade your torchaudio to `2.1.0` or earlier, or install `soundfile` as your audio backend.
 
 # :page_with_curl: License
 
 - The code in this repository is licensed under the MIT license as detailed in the [LICENSE file](LICENSE). This license permits reuse, modification, and distribution of the software, as long as the original license is included.
 
 # :star2: Maintainers:
+
 - [Tuan Tran](https://github.com/antoine-tran)
 - [Hady Elsahar](https://github.com/hadyelsahar)
 - [Pierre Fernandez](https://github.com/pierrefdz)
