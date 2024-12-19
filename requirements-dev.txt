@@ -9,3 +9,6 @@ isort
 flake8
 pre-commit
 huggingface_hub
+psutil
+tabulate
+GPUtil

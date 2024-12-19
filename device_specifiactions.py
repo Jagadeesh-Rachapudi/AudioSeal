@@ -1,8 +1,8 @@
 import platform
 import psutil
 from tabulate import tabulate
+import subprocess
 
-# Try to import GPUtil to get GPU information
 try:
     import GPUtil
 except ImportError:
@@ -22,29 +22,39 @@ def get_cpu_info():
         print(f"{key}: {value}")
 
 def get_gpu_info():
-    if not GPUtil:
-        print("\nGPUtil is not installed. Skipping GPU info.\n")
-        return
-
     print("\n=== GPU Information ===\n")
-    gpus = GPUtil.getGPUs()
-    if not gpus:
-        print("No GPU found.")
-        return
+    if GPUtil:
+        try:
+            gpus = GPUtil.getGPUs()
+            if not gpus:
+                print("No NVIDIA GPU detected.")
+                return
 
-    gpu_list = []
-    for gpu in gpus:
-        gpu_list.append((
-            gpu.id,
-            gpu.name,
-            f"{gpu.memoryTotal} MB",
-            f"{gpu.memoryUsed} MB",
-            f"{gpu.memoryFree} MB",
-            f"{gpu.load * 100:.2f}%",
-            f"{gpu.temperature} °C"
-        ))
+            gpu_list = []
+            for gpu in gpus:
+                gpu_list.append((
+                    gpu.id,
+                    gpu.name,
+                    f"{gpu.memoryTotal} MB",
+                    f"{gpu.memoryUsed} MB",
+                    f"{gpu.memoryFree} MB",
+                    f"{gpu.load * 100:.2f}%",
+                    f"{gpu.temperature} °C"
+                ))
 
-    print(tabulate(gpu_list, headers=["ID", "Name", "Total Memory", "Used Memory", "Free Memory", "Load", "Temperature"]))
+            print(tabulate(gpu_list, headers=["ID", "Name", "Total Memory", "Used Memory", "Free Memory", "Load", "Temperature"]))
+        except Exception as e:
+            print("Error while fetching GPU information:", e)
+    else:
+        print("GPUtil is not installed. Checking for other GPU devices...\n")
+        try:
+            result = subprocess.run(['lshw', '-C', 'display'], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+            if result.stdout:
+                print(result.stdout.strip())
+            else:
+                print("No GPU information found. Ensure drivers are installed or run the command with super-user privileges.")
+        except FileNotFoundError:
+            print("`lshw` command not found. Please install it to check GPU information.")
 
 def main():
     get_cpu_info()
